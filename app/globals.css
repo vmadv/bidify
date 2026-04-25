@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-gold: #C9993A;
+  --color-black: #0D0C0A;
+  --color-white: #FFFFFF;
+  --color-gray-50: #F5F4F2;
+  --color-gray-100: #E8E6E2;
+  --color-gray-400: #9E9A94;
+  --font-playfair: var(--font-playfair);
+  --font-dm-sans: var(--font-dm-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #FFFFFF;
+  color: #0D0C0A;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-playfair {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+.font-dm-sans {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+/* Slider thumb styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #C9993A;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px #C9993A;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #C9993A;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px #C9993A;
+}
+
+/* Number animation */
+@keyframes numberPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); color: #C9993A; }
+  100% { transform: scale(1); }
+}
+
+.number-animate {
+  animation: numberPop 0.3s ease;
+}
+
+/* Ranking row animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ranking-row-enter {
+  animation: slideIn 0.35s ease forwards;
+}
+
+/* Countdown digits */
+.countdown-digit {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
