@@ -129,13 +129,13 @@ export default function BidRanking({ initialBids, myBid, isActive, onTakenPcts }
       </div>
 
       <div className="border border-[#E8E6E2] rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm table-fixed">
           <thead>
             <tr className="border-b border-[#E8E6E2] bg-[#F5F4F2]">
-              <th className="text-left py-2.5 px-4 text-xs font-medium text-[#9E9A94] w-8">#</th>
+              <th className="text-left py-2.5 px-3 text-xs font-medium text-[#9E9A94] w-9">#</th>
               <th className="text-left py-2.5 px-2 text-xs font-medium text-[#9E9A94]">Comprador</th>
-              <th className="text-right py-2.5 px-2 text-xs font-medium text-[#9E9A94]">Puja</th>
-              <th className="text-right py-2.5 px-4 text-xs font-medium text-[#9E9A94] hidden md:table-cell">Visita</th>
+              <th className="text-right py-2.5 px-3 text-xs font-medium text-[#9E9A94] w-20">Puja</th>
+              <th className="text-right py-2.5 px-3 text-xs font-medium text-[#9E9A94] w-24 hidden md:table-cell">Visita</th>
             </tr>
           </thead>
           <tbody>
@@ -150,34 +150,34 @@ export default function BidRanking({ initialBids, myBid, isActive, onTakenPcts }
                     isMe ? "bg-[#FDF8F0]" : "hover:bg-[#F5F4F2]"
                   } ${isAnimating ? "ranking-row-enter" : ""}`}
                 >
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-3">
                     <span className={`text-xs font-semibold ${isFirst ? "text-[#C9993A]" : "text-[#9E9A94]"}`}>
                       #{i + 1}
                     </span>
                   </td>
-                  <td className="py-3 px-2">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-sm ${isMe ? "font-semibold text-[#C9993A]" : "text-[#0D0C0A]"}`}>
+                  <td className="py-3 px-2 min-w-0">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className={`text-sm truncate ${isMe ? "font-semibold text-[#C9993A]" : "text-[#0D0C0A]"}`}>
                         {row.usuario}
                       </span>
                       {isMe && (
-                        <span className="text-[10px] bg-[#C9993A] text-white px-1.5 py-0.5 rounded-full">
+                        <span className="shrink-0 text-[10px] bg-[#C9993A] text-white px-1.5 py-0.5 rounded-full">
                           TÚ
                         </span>
                       )}
                       {isFirst && !isMe && (
-                        <span className="hidden md:inline text-[10px] bg-[#0D0C0A] text-white px-1.5 py-0.5 rounded-full">
+                        <span className="hidden md:inline shrink-0 text-[10px] bg-[#0D0C0A] text-white px-1.5 py-0.5 rounded-full">
                           PREFERENTE
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="py-3 px-2 text-right">
+                  <td className="py-3 px-3 text-right">
                     <span className={`text-sm font-medium tabular-nums ${isMe ? "text-[#C9993A]" : "text-[#0D0C0A]"}`}>
                       {row.porcentaje.toFixed(2).replace(".", ",")}%
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-right hidden md:table-cell">
+                  <td className="py-3 px-3 text-right hidden md:table-cell">
                     <span className="text-xs text-[#9E9A94]">
                       {format(row.visitDate, "EEE d MMM", { locale: es })}
                     </span>

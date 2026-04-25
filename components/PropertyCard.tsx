@@ -61,7 +61,7 @@ export default function PropertyCard({ propiedad }: Props) {
 
           <div className="flex items-end justify-between pt-4 border-t border-[#F5F4F2]">
             <div>
-              <p className="text-xs text-[#9E9A94] mb-0.5">Precio orientativo</p>
+              <p className="text-xs text-[#9E9A94] mb-0.5">Precio vivienda</p>
               <p className="font-playfair text-lg font-semibold text-[#0D0C0A]">
                 {formatPrice(propiedad.precio_orientativo)}
               </p>

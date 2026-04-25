@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable}`}>
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col overflow-x-hidden">
         <Navbar />
         <main className="flex-1">{children}</main>
       </body>

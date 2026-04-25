@@ -51,7 +51,7 @@ export const BID_STEPS: number[] = Array.from(
   (_, i) => Math.round((i + 1) * 15) / 100
 );
 
-function genPujas(count: number, startHoursAgo: number): PujaDemo[] {
+function genPujas(count: number, maxPct: number, startHoursAgo: number): PujaDemo[] {
   const usuarios = [
     "Usuario_482", "Usuario_119", "Usuario_307", "Usuario_055",
     "Usuario_891", "Usuario_234", "Usuario_673", "Usuario_418",
@@ -59,9 +59,9 @@ function genPujas(count: number, startHoursAgo: number): PujaDemo[] {
     "Usuario_907", "Usuario_143", "Usuario_688", "Usuario_821",
     "Usuario_365", "Usuario_512", "Usuario_047", "Usuario_999",
   ];
-  // Pick `count` unique percentages spread across the high end of the range
-  const availableSteps = [...BID_STEPS].reverse(); // start from highest (3.00%)
-  const chosenPcts = availableSteps.slice(0, Math.min(count, availableSteps.length));
+  // Pick top `count` steps up to maxPct, descending
+  const eligible = BID_STEPS.filter((s) => s <= maxPct).reverse();
+  const chosenPcts = eligible.slice(0, Math.min(count, eligible.length));
 
   const result: PujaDemo[] = [];
   for (let i = 0; i < chosenPcts.length; i++) {
@@ -140,7 +140,7 @@ La ubicación es inmejorable: a 5 minutos a pie del Puente de Triana, rodeado de
     duracion_puja_dias: 7,
     fecha_inicio_puja: subDays(now, 2),
     fecha_fin_puja: addDays(now, 5),
-    pujas_demo: genPujas(19, 48),
+    pujas_demo: genPujas(6, 2.10, 48),
   },
   {
     id: "2",
@@ -204,7 +204,7 @@ Vivir en el Albaicín es vivir en uno de los barrios más singulares de Europa: 
     duracion_puja_dias: 5,
     fecha_inicio_puja: subDays(now, 1),
     fecha_fin_puja: addDays(now, 4),
-    pujas_demo: genPujas(17, 24),
+    pujas_demo: genPujas(5, 2.25, 24),
   },
   {
     id: "3",
@@ -269,7 +269,7 @@ La urbanización dispone de piscina comunitaria, jardines con riego automatizado
     duracion_puja_dias: 7,
     fecha_inicio_puja: subDays(now, 3),
     fecha_fin_puja: addDays(now, 4),
-    pujas_demo: genPujas(22, 72),
+    pujas_demo: genPujas(7, 2.40, 72),
   },
   {
     id: "4",
@@ -396,7 +396,7 @@ El edificio, rehabilitado en 2021, conserva el patio interior original con pozo 
     duracion_puja_dias: 5,
     fecha_inicio_puja: subDays(now, 1),
     fecha_fin_puja: addDays(now, 4),
-    pujas_demo: genPujas(16, 20),
+    pujas_demo: genPujas(5, 2.10, 20),
   },
   {
     id: "6",
@@ -461,7 +461,7 @@ El exterior (1.200 m² de parcela) cuenta con piscina infinity de 12x5 m con sis
     duracion_puja_dias: 7,
     fecha_inicio_puja: subDays(now, 14),
     fecha_fin_puja: subDays(now, 7),
-    pujas_demo: genPujas(25, 168),
+    pujas_demo: genPujas(7, 2.25, 168),
   },
 ];
 

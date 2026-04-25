@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import {
   Bed, Bath, Square, Calendar, Zap, MapPin, Play,
-  Users, Gavel, ArrowLeft, AlertTriangle,
+  Users, Gavel, ArrowLeft, AlertTriangle, Clock,
 } from "lucide-react";
 import Link from "next/link";
 import { Propiedad, formatPrice } from "@/lib/demo-data";
@@ -31,10 +31,16 @@ export default function PropertyDetailClient({ propiedad }: Props) {
   const [toast, setToast] = useState<string | null>(null);
   const [videoOpen, setVideoOpen] = useState(false);
   const [takenPcts, setTakenPcts] = useState<number[]>([]);
+  const mobileBidPanelRef = useRef<HTMLDivElement>(null);
 
   const isActive = propiedad.estado === "activa";
   const isClosed = propiedad.estado === "vendida";
   const isSoon = propiedad.estado === "proximamente";
+
+  const daysLeft = isActive
+    ? Math.max(0, Math.ceil((new Date(propiedad.fecha_fin_puja).getTime() - Date.now()) / 86400000))
+    : null;
+  const topBidPct = propiedad.pujas_demo[0]?.porcentaje ?? null;
 
   function estimatePosition(pct: number): number {
     return propiedad.pujas_demo.filter((b) => b.porcentaje > pct).length + 1;
@@ -52,7 +58,7 @@ export default function PropertyDetailClient({ propiedad }: Props) {
   }
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-16 min-h-screen overflow-x-hidden">
       {/* Back */}
       <div className="max-w-7xl mx-auto px-6 py-6">
         <Link
@@ -85,6 +91,18 @@ export default function PropertyDetailClient({ propiedad }: Props) {
             >
               Cert. {propiedad.certificacion_energetica}
             </span>
+            {isActive && daysLeft !== null && (
+              <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#0D0C0A] text-[#C9993A] border border-[#C9993A]/30">
+                <Clock size={11} />
+                {daysLeft === 0 ? "Cierra hoy" : daysLeft === 1 ? "Cierra mañana" : `${daysLeft} días restantes`}
+              </span>
+            )}
+            {isActive && topBidPct !== null && (
+              <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FDF8F0] text-[#C9993A] border border-[#C9993A]/30">
+                <Gavel size={11} />
+                Puja máxima: {topBidPct.toFixed(2).replace(".", ",")}% comisión
+              </span>
+            )}
           </div>
           <h1 className="font-playfair text-3xl md:text-4xl font-semibold text-[#0D0C0A] mb-2 leading-tight">
             {propiedad.titulo}
@@ -205,8 +223,76 @@ export default function PropertyDetailClient({ propiedad }: Props) {
               </div>
             </section>
 
-            {/* Ranking — mobile only */}
-            {(isActive || myBid !== null) && (
+            {/* Mobile bid panel — slider + ranking + CTA */}
+            {isActive && (
+              <section ref={mobileBidPanelRef} className="lg:hidden space-y-5">
+                <div className="bg-white border border-[#E8E6E2] rounded-lg overflow-hidden">
+                  <div className="bg-[#0D0C0A] px-5 py-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-medium uppercase tracking-widest text-white/50 mb-1">
+                        Subasta activa
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[#C9993A] animate-pulse" />
+                        <span className="text-sm text-white font-medium">
+                          <CountdownTimer endDate={propiedad.fecha_fin_puja} compact />
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-white/50 mb-0.5">Compradores</p>
+                      <div className="flex items-center gap-1 justify-end">
+                        <Users size={13} className="text-white/50" />
+                        <span className="text-sm font-medium text-white">
+                          {propiedad.pujas_demo.length}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5 space-y-5">
+                    <BidSlider
+                      value={bidPct}
+                      onChange={setBidPct}
+                      precio={propiedad.precio_orientativo}
+                      takenPcts={takenPcts}
+                    />
+                    {myBid !== null ? (
+                      <div className="space-y-3">
+                        <div className="bg-[#FDF8F0] border border-[#C9993A]/20 rounded-lg p-3 text-center">
+                          <p className="text-xs text-[#9E9A94] mb-0.5">Tu puja activa</p>
+                          <p className="font-playfair text-2xl font-semibold text-[#C9993A]">{myBid}%</p>
+                          {myPosition && (
+                            <p className="text-xs text-[#9E9A94] mt-0.5">Posición #{myPosition}</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => setModalOpen(true)}
+                          className="w-full border border-[#0D0C0A] text-[#0D0C0A] py-3.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[#0D0C0A] hover:text-white transition-colors"
+                        >
+                          <Gavel size={14} />
+                          Actualizar puja
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setModalOpen(true)}
+                        className="w-full bg-[#C9993A] text-white py-4 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#b8882e] transition-colors"
+                      >
+                        <Gavel size={15} />
+                        Pujar ahora →
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <BidRanking
+                  initialBids={propiedad.pujas_demo}
+                  myBid={myBid}
+                  isActive={isActive}
+                  onTakenPcts={setTakenPcts}
+                />
+              </section>
+            )}
+            {!isActive && myBid !== null && (
               <section className="lg:hidden">
                 <BidRanking
                   initialBids={propiedad.pujas_demo}
@@ -341,15 +427,15 @@ export default function PropertyDetailClient({ propiedad }: Props) {
         </div>
       </div>
 
-      {/* Mobile floating CTA */}
-      {isActive && (
+      {/* Mobile floating CTA — scrolls to bid panel first */}
+      {isActive && myBid === null && (
         <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-white border-t border-[#E8E6E2] px-4 py-3">
           <button
-            onClick={() => setModalOpen(true)}
+            onClick={() => mobileBidPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className="w-full bg-[#C9993A] text-white py-4 rounded-lg text-sm font-semibold flex items-center justify-center gap-2"
           >
             <Gavel size={15} />
-            {myBid !== null ? `Actualizar puja (${myBid}%)` : "Pujar ahora →"}
+            Ver subasta y pujar →
           </button>
         </div>
       )}
